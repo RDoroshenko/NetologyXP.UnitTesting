@@ -12,139 +12,73 @@ suite('When I order pizza', function() {
     suite('I ordered pizza', function () {
         test('Order received', function () {
             let order = new Order;
-            let pizzasOrdered = {
-                "Margarita" : {quantity: 2},
-                "Pepperoni" : {quantity: 1},
-                "HamAndCheese" : {quantity: 1}
-            };
+            let pizzasOrdered = {"HamAndCheese" : {quantity: 1}};
+            let orderReceived = order.makePizzaOrder("", pizzasOrdered, "", "");
 
-            let customer = {
-                "name": "Ivan",
-                "birthday": "17.10",
-                "bonusAccount" : 500
-            };
-            assert(order.makePizzaOrder(customer, pizzasOrdered, "15:45", "ABCD"));
+            assert.equal(orderReceived, true);
         })
     });
     suite('It is my Birthday', function() {
         test('Sweet pizza added', function(){
             let order = new Order;
-            let pizzasOrdered = {
-                "Margarita" : {quantity: 2},
-                "Pepperoni" : {quantity: 1},
-                "HamAndCheese" : {quantity: 1}
-            };
-
+            let pizzasOrdered = {};
             let _date = new Date;
-
-            let customer = {
-                "name": "Ivan",
-                "birthday": (_date.getDate() + "." +  (_date.getMonth() + 1)),
-                "bonusAccount" : 500
-            };
-            order.makePizzaOrder(customer, pizzasOrdered, "15:45", "ABCD");
+            let today = _date.getDate() + "." +  (_date.getMonth() + 1)
+            let customer = {"birthday": today};
+            order.makePizzaOrder(customer, pizzasOrdered, "", "");
             assert.equal(pizzasOrdered["Sweet"].quantity, 1)
         })
     });
     suite('Promo code ABCD entered', function() {
         test('Discount 100 received', function(){
             let order = new Order;
-            let pizzasOrdered = {
-                "Margarita" : {quantity: 2},
-                "Pepperoni" : {quantity: 1},
-                "HamAndCheese" : {quantity: 1}
-            };
-
-            let customer = {
-                "name": "Ivan",
-                "birthday": "18.10",
-                "bonusAccount" : 500
-            };
-            order.makePizzaOrder(customer, pizzasOrdered, "16:45", "ABCD");
-            assert.equal(order.calculateOrderAmount(), 550);
+            let pizzasOrdered = {"HamAndCheese" : {quantity: 1}};
+            order.makePizzaOrder("", pizzasOrdered, "", "ABCD");
+            assert.equal(order.calculateOrderAmount(), 100);
         })
     });
     suite('Random promo code entered', function() {
         test('Discount NOT received', function(){
             let order = new Order;
-            let pizzasOrdered = {
-                "Margarita" : {quantity: 2},
-                "Pepperoni" : {quantity: 1},
-                "HamAndCheese" : {quantity: 1}
-            };
-
-            let customer = {
-                "name": "Ivan",
-                "birthday": "18.10",
-                "bonusAccount" : 500
-            };
-            order.makePizzaOrder(customer, pizzasOrdered, "16:45", "ABCDaasdas");
-            assert.equal(order.calculateOrderAmount(), 650);
+            let pizzasOrdered = {"HamAndCheese" : {quantity: 1}};
+            order.makePizzaOrder("", pizzasOrdered, "", "ABCDaasdas");
+            assert.equal(order.calculateOrderAmount(), 200);
         })
     });
     suite('I order two pizzas between 10 and 16', function() {
         test('Discount 20% received', function(){
             let order = new Order;
-            let pizzasOrdered = {
-                "Margarita" : {quantity: 2},
-                "Pepperoni" : {quantity: 1},
-                "HamAndCheese" : {quantity: 1}
-            };
-
-            let customer = {
-                "name": "Ivan",
-                "birthday": "18.10",
-                "bonusAccount" : 500
-            };
-            order.makePizzaOrder(customer, pizzasOrdered, "15:45", "");
-            assert.equal(order.calculateOrderAmount(), 520);
+            let pizzasOrdered = {"HamAndCheese" : {quantity: 2}};
+            let discountTime = "15:45"
+            order.makePizzaOrder("", pizzasOrdered, discountTime, "");
+            assert.equal(order.calculateOrderAmount(), 320);
         })
     });
     suite('Bonus points added', function() {
         test('Added 5% of amount', function(){
-            let _customer = {
-                "name": "Ivan",
-                "birthday": "18.10",
-                "bonusAccount" : 500
-            };
-
+            let _customer = {"bonusAccount" : 0};
             let customer = new Customer(_customer);
-            assert.equal(customer.addBonus(1000), 550);
+            let orderAmount = 1000;
+            let bonusPointsReceived = customer.addBonus(orderAmount);
+            let bonusPointyExpected = orderAmount * 0.05;
+            assert.equal(bonusPointsReceived, bonusPointyExpected);
         })
     });
     suite('I want to pay with bonus points', function() {
         test('Order payed with bonus points', function(){
             let order = new Order;
-            let pizzasOrdered = {
-                "Margarita" : {quantity: 2},
-                "Pepperoni" : {quantity: 1},
-                "HamAndCheese" : {quantity: 1}
-            };
-
-            let customer = {
-                "name": "Ivan",
-                "birthday": "18.10",
-                "bonusAccount" : 650
-            };
-            order.makePizzaOrder(customer, pizzasOrdered, "17:45", "");
+            let pizzasOrdered = {"HamAndCheese" : {quantity: 1}};
+            let customer = {"bonusAccount" : 200};
+            order.makePizzaOrder(customer, pizzasOrdered, "", "");
             assert(order.payWithBonus());
         })
     });
     suite('I do NOT have enough bonus points', function() {
         test('Order NOT payed with bonus points', function(){
             let order = new Order;
-            let pizzasOrdered = {
-                "Margarita" : {quantity: 2},
-                "Pepperoni" : {quantity: 1},
-                "HamAndCheese" : {quantity: 1}
-            };
-
-            let customer = {
-                "name": "Ivan",
-                "birthday": "18.10",
-                "bonusAccount" : 350
-            };
-            order.makePizzaOrder(customer, pizzasOrdered, "17:45", "");
+            let pizzasOrdered = {"HamAndCheese" : {quantity: 1}};
+            let customer = {"bonusAccount" : 0};
+            order.makePizzaOrder(customer, pizzasOrdered, "", "");
             assert(!order.payWithBonus());
         })
     });
