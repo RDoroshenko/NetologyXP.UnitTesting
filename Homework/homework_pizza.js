@@ -60,27 +60,29 @@ suite('When I order pizza', function() {
             let customer = new Customer(_customer);
             let orderAmount = 1000;
             let bonusPointsReceived = customer.addBonus(orderAmount);
-            let bonusPointyExpected = orderAmount * 0.05;
-            assert.equal(bonusPointsReceived, bonusPointyExpected);
+            let bonusPointsExpected = orderAmount * 0.05;
+            assert.equal(bonusPointsReceived, bonusPointsExpected);
         })
     });
     suite('I want to pay with bonus points', function() {
-        test('Order payed with bonus points', function(){
-            let order = new Order;
-            let pizzasOrdered = {"HamAndCheese" : {quantity: 1}};
-            let customer = {"bonusAccount" : 200};
-            order.makePizzaOrder(customer, pizzasOrdered, "", "");
-            assert(order.payWithBonus());
-        })
-    });
-    suite('I do NOT have enough bonus points', function() {
-        test('Order NOT payed with bonus points', function(){
-            let order = new Order;
-            let pizzasOrdered = {"HamAndCheese" : {quantity: 1}};
-            let customer = {"bonusAccount" : 0};
-            order.makePizzaOrder(customer, pizzasOrdered, "", "");
-            assert(!order.payWithBonus());
-        })
+        suite('I have enough points', function() {
+            test('Order payed with bonus points', function(){
+                let order = new Order;
+                let pizzasOrdered = {"HamAndCheese" : {quantity: 1}};
+                let customer = {"bonusAccount" : 200};
+                order.makePizzaOrder(customer, pizzasOrdered, "", "");
+                assert(order.payWithBonus());
+            })
+        });
+        suite('I do NOT have enough bonus points', function() {
+            test('Order NOT payed with bonus points', function(){
+                let order = new Order;
+                let pizzasOrdered = {"HamAndCheese" : {quantity: 1}};
+                let customer = {"bonusAccount" : 0};
+                order.makePizzaOrder(customer, pizzasOrdered, "", "");
+                assert(!order.payWithBonus());
+            })
+        });
     });
 
 })
