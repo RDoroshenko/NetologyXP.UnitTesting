@@ -59,9 +59,9 @@ suite('When I order pizza', function() {
             let _customer = {"bonusAccount" : 0};
             let customer = new Customer(_customer);
             let orderAmount = 1000;
-            let bonusPointsReceived = customer.addBonus(orderAmount);
             let bonusPointsExpected = orderAmount * 0.05;
-            assert.equal(bonusPointsReceived, bonusPointsExpected);
+            customer.addBonus(orderAmount);
+            assert.equal(customer.bonusAccount, bonusPointsExpected);
         })
     });
     suite('I want to pay with bonus points', function() {
